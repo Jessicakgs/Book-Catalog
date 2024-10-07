@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
@@ -16,16 +17,20 @@ public class CatalogController {
     private BookService bookService;
 
     @PostMapping("/created")
-    @Operation(summary = "Creating books " , description =  "Allows you to add a new book with title, author, publication year and ISBN")
+    @Operation(summary = "Creating books ", description = "Allows you to add a new book with title, author, publication year and ISBN")
     public Book createBook(@RequestBody Book book) {
         return bookService.createBook(book);
     }
 
     @GetMapping
-    @Operation(summary = "Listing books" , description = "A list in GameS format of all the books.")
-    public List<Book> listBook(@RequestBody Book book) {
+    @Operation(summary = "Listing books", description = "A list in GameS format of all the books.")
+    public List<Book> listAllBooks() {
         return bookService.listBooks();
     }
 
-
+    @GetMapping("/{id}")
+    @Operation(summary = "Search books by id", description = "Returns the details of a specific book based on its ID.")
+    public Book listBook(@PathVariable Long id) {
+        return bookService.findBookById(id);
+    }
 }
