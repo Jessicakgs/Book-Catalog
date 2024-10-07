@@ -2,6 +2,8 @@ package manage.book.catalog.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -18,7 +20,7 @@ public class BookModel {
     private String author;
 
     @Column(name = "year_publication")
-    private Date yearPublication;
+    private LocalDate yearPublication;
 
     @Column(unique = true)
     private String isbn;
@@ -47,11 +49,11 @@ public class BookModel {
         this.author = author;
     }
 
-    public Date getYearPublication() {
+    public LocalDate getYearPublication() {
         return yearPublication;
     }
 
-    public void setYearPublication(Date yearPublication) {
+    public void setYearPublication(LocalDate yearPublication) {
         this.yearPublication = yearPublication;
     }
 
