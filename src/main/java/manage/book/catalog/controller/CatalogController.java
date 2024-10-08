@@ -33,4 +33,11 @@ public class CatalogController {
     public Book listBook(@PathVariable Long id) {
         return bookService.findBookById(id);
     }
+
+    @PutMapping("/updated/{id}")
+    @Operation(summary = "Update books", description = "Allows you to update information in an existing book.")
+    public Book updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
+        return bookService.updateBooks(id, bookDetails);
+    }
+
 }
