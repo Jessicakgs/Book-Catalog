@@ -42,4 +42,8 @@ public class BookService {
                     return bookRepository.save(book);
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found with id " + id));
     }
+//service
+    public void deleteBooks(Long id) {
+        bookRepository.deleteById(id);
+    }
 }

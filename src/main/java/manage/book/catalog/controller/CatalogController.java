@@ -40,4 +40,12 @@ public class CatalogController {
         return bookService.updateBooks(id, bookDetails);
     }
 
+    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Delete books", description = "Removes a book from the catalog by its ID.")
+    public void deleteBook(@PathVariable Long id) {
+        bookService.deleteBooks(id);
+    }
+
+
+
 }
