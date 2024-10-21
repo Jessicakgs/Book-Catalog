@@ -1,6 +1,7 @@
 package manage.book.catalog.model;
 
 import jakarta.persistence.*;
+import manage.book.catalog.service.IsbnValidation;
 
 import java.time.LocalDate;
 

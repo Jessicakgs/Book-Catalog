@@ -16,12 +16,12 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    public Book createBook (Book book) {
+    public Book createBook(Book book) {
         return bookRepository.save(book);
 
     }
 
-    public List<Book> listBooks () {
+    public List<Book> listBooks() {
         return bookRepository.findAll();
     }
 
@@ -42,7 +42,7 @@ public class BookService {
                     return bookRepository.save(book);
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found with id " + id));
     }
-//service
+
     public void deleteBooks(Long id) {
         bookRepository.deleteById(id);
     }
