@@ -5,10 +5,11 @@ import manage.book.catalog.model.Book;
 import manage.book.catalog.service.BookService;
 import manage.book.catalog.service.IsbnValidation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
@@ -21,29 +22,36 @@ public class CatalogController {
     private IsbnValidation isbnValidation;
 
     @PostMapping("/created")
-    @Operation(summary = "Creating books ", description = "Allows you to add a new book with title, author, publication year and ISBN")
+    @Operation(summary = "Create books", description = "Allows you to add a new book with title, author, publication year and ISBN")
     public Book createBook(@RequestBody Book book) {
+
         if (!isbnValidation.isValid(book.getIsbn())) {
-            throw new IllegalArgumentException("Invalid ISBN: " + book.getIsbn());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ISBN: " + book.getIsbn());
         }
+
         return bookService.createBook(book);
     }
 
     @GetMapping
-    @Operation(summary = "Listing books", description = "A list in JSON format of all the books.")
+    @Operation(summary = "List books", description = "Returns a list in JSON format of all the books.")
     public List<Book> listAllBooks() {
         return bookService.listBooks();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Search books by id", description = "Returns the details of a specific book based on its ID.")
+    @Operation(summary = "Get book by id", description = "Returns the details of a specific book based on its ID.")
     public Book listBook(@PathVariable Long id) {
         return bookService.findBookById(id);
     }
 
-    @PutMapping("/updated/{id}")
+    @PutMapping("/update/{id}")
     @Operation(summary = "Update books", description = "Allows you to update information in an existing book.")
     public Book updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
+
+        if (!isbnValidation.isValid(bookDetails.getIsbn())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ISBN: " + bookDetails.getIsbn());
+        }
+
         return bookService.updateBooks(id, bookDetails);
     }
 
@@ -52,7 +60,4 @@ public class CatalogController {
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBooks(id);
     }
-
-
-
 }

@@ -1,6 +1,5 @@
 package manage.book.catalog.service;
 
-
 import manage.book.catalog.model.Book;
 import manage.book.catalog.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,26 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    public Book createBook(Book book) {
-        return bookRepository.save(book);
+    @Autowired
+    private IsbnValidation isbnValidation;
 
+    public Book createBook(Book book) {
+        String isbn = book.getIsbn();
+
+        if (!isbnValidation.isValid(isbn)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ISBN format.");
+        }
+
+        if (isbn.length() == 10) {
+            isbn = isbnValidation.convertIsbn10ToIsbn13(isbn);
+        }
+
+        if (bookRepository.existsByIsbn(isbn)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "A book with this ISBN already exists.");
+        }
+
+        book.setIsbn(isbn);
+        return bookRepository.save(book);
     }
 
     public List<Book> listBooks() {
@@ -28,7 +44,6 @@ public class BookService {
     public Book findBookById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found with id " + id));
-
     }
 
     public Book updateBooks(Long id, Book bookDetails) {
@@ -37,8 +52,22 @@ public class BookService {
                     book.setTitle(bookDetails.getTitle());
                     book.setAuthor(bookDetails.getAuthor());
                     book.setYearPublication(bookDetails.getYearPublication());
-                    book.setIsbn(bookDetails.getIsbn());
 
+                    String isbn = bookDetails.getIsbn();
+
+                    if (!isbnValidation.isValid(isbn)) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ISBN format.");
+                    }
+
+                    if (isbn.length() == 10) {
+                        isbn = isbnValidation.convertIsbn10ToIsbn13(isbn);
+                    }
+
+                    if (!book.getIsbn().equals(isbn) && bookRepository.existsByIsbn(isbn)) {
+                        throw new ResponseStatusException(HttpStatus.CONFLICT, "A book with this ISBN already exists.");
+                    }
+
+                    book.setIsbn(isbn);
                     return bookRepository.save(book);
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found with id " + id));
     }

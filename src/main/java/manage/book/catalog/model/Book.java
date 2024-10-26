@@ -57,7 +57,7 @@ public class Book {
     }
 
     public String getIsbn() {
-        return isbn;
+        return isbn.replaceAll("-", "").replaceAll(" ", "");
     }
 
     public void setIsbn(String isbn) {

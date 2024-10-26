@@ -10,8 +10,6 @@ public class IsbnValidation {
             return false;
         }
 
-        isbn = isbn.replaceAll("-", "").replaceAll(" ", "");
-
         if (isbn.length() == 10) {
             return isValidIsbn10(isbn);
         } else if (isbn.length() == 13) {
@@ -49,6 +47,24 @@ public class IsbnValidation {
         }
 
         return sum % 10 == 0;
+    }
+
+
+    public String convertIsbn10ToIsbn13(String isbn10) {
+        String isbn = "978" + isbn10.substring(0, 9);
+        int sum = 0;
+
+        for (int i = 0; i < isbn.length(); i++) {
+            int digit = isbn.charAt(i) - '0';
+            sum += (i % 2 == 0) ? digit : digit * 3;
+        }
+
+        int checksum = 10 - (sum % 10);
+        if (checksum == 10) {
+            checksum = 0;
+        }
+
+        return isbn + checksum;
     }
 
 }
